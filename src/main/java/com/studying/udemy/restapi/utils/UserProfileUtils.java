@@ -66,6 +66,8 @@ public class UserProfileUtils {
             throw new AssertionError("Error while hashing a password " +e.getMessage(), e);
         } catch (InvalidKeySpecException e) {
             throw new AssertionError("Error while hashing a password " +e.getMessage(), e);
+        } finally {
+            keySpec.clearPassword();
         }
     }
 
@@ -75,5 +77,9 @@ public class UserProfileUtils {
         returnValue = Base64.getEncoder().encodeToString(securePassword);
 
         return returnValue;
+    }
+
+    public byte[] encrypt(String securePassword, String accessTokenMaterial) {
+        return hash(securePassword.toCharArray(), accessTokenMaterial.getBytes());
     }
 }

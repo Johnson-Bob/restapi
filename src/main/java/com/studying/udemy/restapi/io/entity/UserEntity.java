@@ -19,6 +19,7 @@ public class UserEntity implements Serializable {
     private String email;
     private String salt;
     private String encryptedPassword;
+    private String token;
 
     public long getId() {
         return id;
@@ -76,4 +77,11 @@ public class UserEntity implements Serializable {
         this.encryptedPassword = encryptedPassword;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 }
