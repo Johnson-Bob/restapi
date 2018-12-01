@@ -1,6 +1,7 @@
 package com.studying.udemy.restapi.service.impl;
 
 import com.studying.udemy.restapi.exceptions.CouldNotCreateRecordException;
+import com.studying.udemy.restapi.exceptions.CouldNotUpdateRecordException;
 import com.studying.udemy.restapi.exceptions.NoRecordFoundException;
 import com.studying.udemy.restapi.io.dao.DAO;
 import com.studying.udemy.restapi.io.dao.impl.MySQLDAO;
@@ -100,6 +101,18 @@ public class UserServiceImpl implements UserService {
         }
 
         return returnValue;
+    }
+
+    @Override
+    public void updateUserDetails(UserDTO userProfile) {
+        try {
+            database.openConnection();
+            database.updateUser(userProfile);
+        } catch (Exception e) {
+            throw new CouldNotUpdateRecordException(e.getMessage());
+        } finally {
+            database.closeConnection();
+        }
     }
 
     private UserDTO saveUser(UserDTO user) {

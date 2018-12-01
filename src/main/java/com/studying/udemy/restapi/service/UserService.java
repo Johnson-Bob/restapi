@@ -9,4 +9,5 @@ public interface UserService {
     UserDTO getUser(String id);
     UserDTO getUserByUserName(String userEmail);
     List<UserDTO> getUsers(int staert, int limit);
+    void updateUserDetails(UserDTO userProfile);
 }

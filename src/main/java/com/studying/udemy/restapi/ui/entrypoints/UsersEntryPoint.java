@@ -5,7 +5,9 @@ import com.studying.udemy.restapi.service.UserService;
 import com.studying.udemy.restapi.service.impl.UserServiceImpl;
 import com.studying.udemy.restapi.shared.dto.UserDTO;
 import com.studying.udemy.restapi.ui.model.request.CreateUserRequestModel;
+import com.studying.udemy.restapi.ui.model.request.UpdateUserRequestModel;
 import com.studying.udemy.restapi.ui.model.response.UserProfileRest;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import javax.ws.rs.*;
@@ -63,6 +65,30 @@ public class UsersEntryPoint {
 
 
         return userProfileList.stream().map(this::convertUserDTOInProfileRest).collect(Collectors.toList());
+    }
+
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public UserProfileRest updateUserDetails(@PathParam("id") String id,
+                                             UpdateUserRequestModel userDetails) {
+        UserService userService = new UserServiceImpl();
+        UserDTO userStoredProfile = userService.getUser(id);
+
+//        Set only those fields you would like to be updated with this request
+        if (StringUtils.isNotBlank(userDetails.getFirstName())) {
+            userStoredProfile.setFirstName(userDetails.getFirstName());
+        }
+
+        if (StringUtils.isNotBlank(userDetails.getLastName())) {
+            userStoredProfile.setLastName(userDetails.getLastName());
+        }
+
+//        Update user details
+        userService.updateUserDetails(userStoredProfile);
+
+        return convertUserDTOInProfileRest(userStoredProfile);
     }
 
     private UserProfileRest convertUserDTOInProfileRest(UserDTO userProfile) {
