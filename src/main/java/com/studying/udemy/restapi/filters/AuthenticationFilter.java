@@ -33,7 +33,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         }
 
 //        Extract UserId
-        String userId = requestContext.getUriInfo().getPathParameters().getFirst("id");
+        String userId = requestContext.getHeaderString("User-Id");
+        if (userId == null) {
+            throw new AuthenticationException("User-Id header must be provided");
+        }
 
         validateToken(token, userId);
     }

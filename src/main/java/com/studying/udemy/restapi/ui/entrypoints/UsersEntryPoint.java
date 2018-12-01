@@ -10,6 +10,8 @@ import org.springframework.beans.BeanUtils;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/users")
 public class UsersEntryPoint {
@@ -47,5 +49,27 @@ public class UsersEntryPoint {
         BeanUtils.copyProperties(userProfile, returnValue);
 
         return returnValue;
+    }
+
+    @Secured
+    @GET
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public List<UserProfileRest> getUsers(@DefaultValue("0") @QueryParam("start") int start,
+                                          @DefaultValue("50") @QueryParam("limit") int limit) {
+        UserService userService = new UserServiceImpl();
+        List<UserDTO> userProfileList = userService.getUsers(start, limit);
+
+//        Prepare return value
+
+
+        return userProfileList.stream().map(this::convertUserDTOInProfileRest).collect(Collectors.toList());
+    }
+
+    private UserProfileRest convertUserDTOInProfileRest(UserDTO userProfile) {
+        UserProfileRest result = new UserProfileRest();
+        BeanUtils.copyProperties(userProfile, result);
+        result.setHref("/users/" + userProfile.getUserId());
+
+        return result;
     }
 }

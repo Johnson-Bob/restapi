@@ -10,6 +10,8 @@ import com.studying.udemy.restapi.ui.model.response.ErrorMessages;
 import com.studying.udemy.restapi.utils.UserProfileUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+
 public class UserServiceImpl implements UserService {
     private DAO database;
     private UserProfileUtils profileUtils;
@@ -84,6 +86,20 @@ public class UserServiceImpl implements UserService {
         }
 
         return userDTO;
+    }
+
+    @Override
+    public List<UserDTO> getUsers(int start, int limit) {
+        List<UserDTO> returnValue = null;
+
+        try {
+            database.openConnection();
+            returnValue = database.getUsers(start, limit);
+        } finally {
+            database.closeConnection();
+        }
+
+        return returnValue;
     }
 
     private UserDTO saveUser(UserDTO user) {

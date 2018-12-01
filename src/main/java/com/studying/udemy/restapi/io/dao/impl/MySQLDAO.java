@@ -13,6 +13,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MySQLDAO implements DAO {
     private Session session;
@@ -70,6 +71,22 @@ public class MySQLDAO implements DAO {
     }
 
     @Override
+    public List<UserDTO> getUsers(int start, int limit) {
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+
+        CriteriaQuery<UserEntity> criteria = cb.createQuery(UserEntity.class);
+        Root<UserEntity> userRoot = criteria.from(UserEntity.class);
+        criteria.select(userRoot);
+
+        List<UserEntity> searchResult = session.createQuery(criteria)
+                .setFirstResult(start)
+                .setMaxResults(limit)
+                .getResultList();
+
+        return searchResult.stream().map(this::convertUserEntityToDto).collect(Collectors.toList());
+    }
+
+    @Override
     public UserDTO saveUser(UserDTO user) {
         UserDTO returnValue = null;
         UserEntity userEntity = new UserEntity();
@@ -100,5 +117,12 @@ public class MySQLDAO implements DAO {
         if (session != null) {
             session.close();
         }
+    }
+
+    private UserDTO convertUserEntityToDto(UserEntity entity) {
+        UserDTO returnValue = new UserDTO();
+        BeanUtils.copyProperties(entity, returnValue);
+
+        return returnValue;
     }
 }
