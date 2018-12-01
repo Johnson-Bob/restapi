@@ -10,4 +10,5 @@ public interface UserService {
     UserDTO getUserByUserName(String userEmail);
     List<UserDTO> getUsers(int staert, int limit);
     void updateUserDetails(UserDTO userProfile);
+    void deleteUser(UserDTO userProfile);
 }

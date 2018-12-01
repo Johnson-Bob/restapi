@@ -11,7 +11,6 @@ import org.springframework.beans.BeanUtils;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -109,6 +108,16 @@ public class MySQLDAO implements DAO {
 
         session.beginTransaction();
         session.update(userEntity);
+        session.getTransaction().commit();
+    }
+
+    @Override
+    public void deleteUser(UserDTO userProfile) {
+        UserEntity userEntity = new UserEntity();
+        BeanUtils.copyProperties(userProfile, userEntity);
+
+        session.beginTransaction();
+        session.delete(userEntity);
         session.getTransaction().commit();
     }
 

@@ -4,8 +4,11 @@ import com.studying.udemy.restapi.annotation.Secured;
 import com.studying.udemy.restapi.service.UserService;
 import com.studying.udemy.restapi.service.impl.UserServiceImpl;
 import com.studying.udemy.restapi.shared.dto.UserDTO;
+import com.studying.udemy.restapi.ui.model.RequestOperation;
+import com.studying.udemy.restapi.ui.model.ResponseStatus;
 import com.studying.udemy.restapi.ui.model.request.CreateUserRequestModel;
 import com.studying.udemy.restapi.ui.model.request.UpdateUserRequestModel;
+import com.studying.udemy.restapi.ui.model.response.DeleteUserProfileResponseModel;
 import com.studying.udemy.restapi.ui.model.response.UserProfileRest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -89,6 +92,23 @@ public class UsersEntryPoint {
         userService.updateUserDetails(userStoredProfile);
 
         return convertUserDTOInProfileRest(userStoredProfile);
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public DeleteUserProfileResponseModel deleteUserProfile(@PathParam("id") String id) {
+        DeleteUserProfileResponseModel returnValue = new DeleteUserProfileResponseModel();
+        returnValue.setRequestOperation(RequestOperation.DELETE);
+
+        UserService userService = new UserServiceImpl();
+        UserDTO storedUserProfile = userService.getUser(id);
+
+        userService.deleteUser(storedUserProfile);
+
+        returnValue.setResponseStatus(ResponseStatus.SUCCESS);
+
+        return returnValue;
     }
 
     private UserProfileRest convertUserDTOInProfileRest(UserDTO userProfile) {

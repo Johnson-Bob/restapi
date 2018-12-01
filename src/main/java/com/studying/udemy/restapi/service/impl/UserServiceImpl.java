@@ -1,6 +1,7 @@
 package com.studying.udemy.restapi.service.impl;
 
 import com.studying.udemy.restapi.exceptions.CouldNotCreateRecordException;
+import com.studying.udemy.restapi.exceptions.CouldNotDeleteRecordException;
 import com.studying.udemy.restapi.exceptions.CouldNotUpdateRecordException;
 import com.studying.udemy.restapi.exceptions.NoRecordFoundException;
 import com.studying.udemy.restapi.io.dao.DAO;
@@ -111,6 +112,18 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             throw new CouldNotUpdateRecordException(e.getMessage());
         } finally {
+            database.closeConnection();
+        }
+    }
+
+    @Override
+    public void deleteUser(UserDTO userProfile) {
+        try {
+            database.openConnection();
+            database.deleteUser(userProfile);
+        }catch (Exception e) {
+            throw new CouldNotDeleteRecordException(e.getMessage());
+        }finally {
             database.closeConnection();
         }
     }

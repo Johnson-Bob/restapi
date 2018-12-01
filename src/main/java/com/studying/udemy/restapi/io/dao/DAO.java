@@ -11,5 +11,6 @@ public interface DAO {
     void updateUser(UserDTO user);
     UserDTO getUser(String id);
     List<UserDTO> getUsers(int start, int limit);
+    void deleteUser(UserDTO userProfile);
     void closeConnection();
 }
