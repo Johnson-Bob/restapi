@@ -12,6 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AuthenticationServiceImpl implements AuthenticationService {
     private DAO database;
@@ -52,11 +54,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
 //        Split token into equals part
-        int tokenLength = encryptedAccessToken.length;
-        String tokenToSaveToDatabase = Base64.getEncoder()
-                .encodeToString(Arrays.copyOfRange(encryptedAccessToken, 0, tokenLength/2));
-        returnValue = Base64.getEncoder()
-                .encodeToString(Arrays.copyOfRange(encryptedAccessToken, tokenLength/2, tokenLength));
+        String tokenEncoded = Base64.getEncoder().encodeToString(encryptedAccessToken);
+        int tokenLength = tokenEncoded.length();
+        String tokenToSaveToDatabase = StringUtils.substring(tokenEncoded, 0, tokenLength/2);
+        returnValue = StringUtils.substring(tokenEncoded,  tokenLength/2, tokenLength);
 
         userProfile.setToken(tokenToSaveToDatabase);
         updateUserProfile(userProfile);
